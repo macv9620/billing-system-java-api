@@ -1,4 +1,4 @@
-package com.macv.billing.service.dto;
+package com.macv.billing.service;
 
 import com.macv.billing.persistence.entity.CustomerEntity;
 import com.macv.billing.persistence.repository.CustomerRepository;
