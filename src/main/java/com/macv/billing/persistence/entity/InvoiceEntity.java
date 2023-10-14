@@ -88,4 +88,17 @@ public class InvoiceEntity {
     public void setProducts(List<InvoiceProductEntity> products) {
         this.products = products;
     }
+
+    @Override
+    public String toString() {
+        return "InvoiceEntity{" +
+                "invoiceId=" + invoiceId +
+                ", customerId='" + customerId + '\'' +
+                ", invoiceDate=" + invoiceDate +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", userComment='" + userComment + '\'' +
+                ", invoiceTotal=" + invoiceTotal +
+                ", products=" + products +
+                '}';
+    }
 }

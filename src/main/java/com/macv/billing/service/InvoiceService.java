@@ -40,44 +40,52 @@ public class InvoiceService {
 
     @Transactional
     public InvoiceEntity postNewBuy(NewBuyDto newBuyDto) throws IncorrectCustomDataRequestException{
-        InvoiceEntity invoiceEntity = null;
-        //Evaluar como acumular el total de la orden
-        double orderTotal = 0;
+        double orderTotal = 0.00;
+
         boolean customerExists = customerRepository.existsById(newBuyDto.getCustomerId());
+
         if (!customerExists){
             throw new IncorrectCustomDataRequestException("Invalid customer");
         } else if ((
                 !Objects.equals(newBuyDto.getPaymentMethod(), "CASH") &&
                         !Objects.equals(newBuyDto.getPaymentMethod(), "CREDIT_CARD"))){
             throw new IncorrectCustomDataRequestException(
-                    "Payment method should be CASH or CREDIT_CARD");
+                    "Payment method must be CASH or CREDIT_CARD");
         }
 
-        List<ProductSummaryDto> products = newBuyDto.getProducts();
+        List<ProductSummaryDto> invoiceProducts = newBuyDto.getProducts();
 
-        products.forEach(p -> {
-            Optional<ProductEntity> productExists = productRepository.findById(p.getProductId());
-            if (productExists.isEmpty()){
-                    throw new IncorrectCustomDataRequestException("Product Id " + p.getProductId()
+
+            for(ProductSummaryDto invoiceProduct : newBuyDto.getProducts()){
+            Optional<ProductEntity> productFound = productRepository.findById(invoiceProduct.getProductId());
+            if (productFound.isEmpty()){
+                    throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
                     + " not found");
             }
 
-            productExists.map(product ->{
-               int dif = product.getStock() - p.getProductQuantity();
-               if (dif < 0){
-                   throw new IncorrectCustomDataRequestException("Product Id " + p.getProductId()
-                           + " doesn't have enough stock");
-               }
-
-                return orderTotal;
-            });
-        });
+            ProductEntity product = productFound.get();
+            int dif = product.getStock() - invoiceProduct.getProductQuantity();
+            if (dif < 0){
+                throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
+                        + " doesn't have enough stock");
+            }
+            orderTotal +=  (double) Math.round(
+                    invoiceProduct.getProductQuantity() * product.getUnitPrice() * 100) /100;
+                System.out.println(orderTotal);
+        };
 
         InvoiceEntity newInvoiceEntity = new InvoiceEntity();
         newInvoiceEntity.setCustomerId(newBuyDto.getCustomerId());
         newInvoiceEntity.setPaymentMethod(newBuyDto.getPaymentMethod());
         newInvoiceEntity.setUserComment(newBuyDto.getUserComment());
+        newInvoiceEntity.setInvoiceTotal(orderTotal);
 
-        return invoiceEntity;
+        InvoiceEntity createdInvoice = invoiceRepository.save(newInvoiceEntity);
+        System.out.println(createdInvoice);
+        if (createdInvoice.getInvoiceId()>4){
+            throw new IncorrectCustomDataRequestException("Error de prueba");
+
+        }
+        return createdInvoice;
     }
 }
