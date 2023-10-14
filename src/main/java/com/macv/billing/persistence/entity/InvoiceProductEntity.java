@@ -1,15 +1,19 @@
 package com.macv.billing.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.macv.billing.persistence.entity.compositeKey.InvoiceProductPK;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "invoice_product")
 public class InvoiceProductEntity {
 
-    @EmbeddedId
-    private InvoiceProductPK id;
+    @Id
+    @Column(name = "id_invoice")
+    private int invoiceId;
+
+    @Id
+    @Column(name = "id_product")
+    private int productId;
 
     @Column(name = "quantity")
     private int productQuantity;
@@ -22,12 +26,25 @@ public class InvoiceProductEntity {
     @JoinColumn(name = "id_invoice", insertable = false, updatable = false)
     private InvoiceEntity invoice;
 
-    public InvoiceProductPK getId() {
-        return id;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "id_product", insertable = false, updatable = false)
+    private ProductEntity product;
+
+    public int getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setId(InvoiceProductPK id) {
-        this.id = id;
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public int getProductQuantity() {
@@ -52,5 +69,13 @@ public class InvoiceProductEntity {
 
     public void setInvoice(InvoiceEntity invoice) {
         this.invoice = invoice;
+    }
+
+    public ProductEntity getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductEntity product) {
+        this.product = product;
     }
 }

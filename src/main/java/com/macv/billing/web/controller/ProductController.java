@@ -1,6 +1,5 @@
 package com.macv.billing.web.controller;
 
-import com.macv.billing.persistence.entity.BrandEntity;
 import com.macv.billing.persistence.entity.ProductEntity;
 import com.macv.billing.service.ProductService;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
@@ -41,4 +40,5 @@ public class ProductController {
                 data
         ), httpStatus);
     }
+
 }

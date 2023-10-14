@@ -1,6 +1,7 @@
 package com.macv.billing.persistence.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,7 @@ public class InvoiceEntity {
     @Column(name = "id_customer")
     private String customerId;
 
+    @CreationTimestamp
     @Column(name = "invoice_date")
     private LocalDateTime invoiceDate;
 

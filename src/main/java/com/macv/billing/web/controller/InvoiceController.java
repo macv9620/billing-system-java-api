@@ -2,15 +2,15 @@ package com.macv.billing.web.controller;
 
 import com.macv.billing.persistence.entity.CustomerEntity;
 import com.macv.billing.persistence.entity.InvoiceEntity;
+import com.macv.billing.persistence.entity.ProductEntity;
 import com.macv.billing.service.InvoiceService;
+import com.macv.billing.service.customException.IncorrectCustomDataRequestException;
+import com.macv.billing.service.dto.NewBuyDto;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -64,4 +64,32 @@ public class InvoiceController {
                 data
         ), httpStatus);
     }
+
+    @PostMapping("/newBuy")
+    public ResponseEntity<ResponseWrapper<?>> postNewBuy(@RequestBody NewBuyDto newBuyDto){
+
+        String message;
+        InvoiceEntity data;
+        HttpStatus httpStatus;
+
+        try {
+            data = invoiceService.postNewBuy(newBuyDto);
+            message = "TODO OK";
+            httpStatus = HttpStatus.OK;
+        } catch (IncorrectCustomDataRequestException eCustom){
+            data = null;
+            message = eCustom.getMessage();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } catch (Exception e){
+            data = null;
+            message = "Error no controlado";
+            e.printStackTrace();
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<>(new ResponseWrapper<>(
+                message,
+                data
+        ), httpStatus);
+    }
+
 }
