@@ -74,8 +74,8 @@ public class InvoiceController {
 
         try {
             data = invoiceService.postNewBuy(newBuyDto);
-            message = "TODO OK";
-            httpStatus = HttpStatus.OK;
+            message = "Invoice created successfully";
+            httpStatus = HttpStatus.CREATED;
         } catch (IncorrectCustomDataRequestException eCustom){
             data = null;
             message = eCustom.getMessage();

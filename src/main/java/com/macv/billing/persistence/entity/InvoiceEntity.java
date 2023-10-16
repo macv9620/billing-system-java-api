@@ -33,6 +33,10 @@ public class InvoiceEntity {
     @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER)
     private List<InvoiceProductEntity> products;
 
+    public void addNewInvoiceProductEntity(InvoiceProductEntity product){
+        this.products.add(product);
+    }
+
     public int getInvoiceId() {
         return invoiceId;
     }

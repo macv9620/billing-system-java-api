@@ -1,10 +1,12 @@
 package com.macv.billing.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.macv.billing.persistence.entity.compositeKey.InvoiceProductPK;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "invoice_product")
+@IdClass(InvoiceProductPK.class)
 public class InvoiceProductEntity {
 
     @Id
@@ -78,4 +80,6 @@ public class InvoiceProductEntity {
     public void setProduct(ProductEntity product) {
         this.product = product;
     }
+
+
 }

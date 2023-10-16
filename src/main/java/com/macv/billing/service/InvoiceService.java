@@ -1,33 +1,34 @@
 package com.macv.billing.service;
 
 import com.macv.billing.persistence.entity.InvoiceEntity;
+import com.macv.billing.persistence.entity.InvoiceProductEntity;
 import com.macv.billing.persistence.entity.ProductEntity;
 import com.macv.billing.persistence.repository.CustomerRepository;
+import com.macv.billing.persistence.repository.InvoiceProductRepository;
 import com.macv.billing.persistence.repository.InvoiceRepository;
 import com.macv.billing.persistence.repository.ProductRepository;
 import com.macv.billing.service.customException.IncorrectCustomDataRequestException;
 import com.macv.billing.service.dto.NewBuyDto;
 import com.macv.billing.service.dto.ProductSummaryDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
 
-@Repository
+@Service
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final InvoiceProductRepository invoiceProductRepository;
 
     @Autowired
-    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, ProductRepository productRepository) {
+    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, ProductRepository productRepository, InvoiceProductRepository invoiceProductRepository) {
         this.invoiceRepository = invoiceRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
+        this.invoiceProductRepository = invoiceProductRepository;
     }
 
     public List<InvoiceEntity> getAll(){
@@ -41,6 +42,8 @@ public class InvoiceService {
     @Transactional
     public InvoiceEntity postNewBuy(NewBuyDto newBuyDto) throws IncorrectCustomDataRequestException{
         double orderTotal = 0.00;
+        HashMap<Integer, Double> productsUnitPrice = new HashMap<>();
+        List<InvoiceProductEntity> newProductsToSet = new ArrayList<>();
 
         boolean customerExists = customerRepository.existsById(newBuyDto.getCustomerId());
 
@@ -55,12 +58,12 @@ public class InvoiceService {
 
         List<ProductSummaryDto> invoiceProducts = newBuyDto.getProducts();
 
+        for(ProductSummaryDto invoiceProduct : newBuyDto.getProducts()){
 
-            for(ProductSummaryDto invoiceProduct : newBuyDto.getProducts()){
             Optional<ProductEntity> productFound = productRepository.findById(invoiceProduct.getProductId());
             if (productFound.isEmpty()){
-                    throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
-                    + " not found");
+                throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
+                        + " not found");
             }
 
             ProductEntity product = productFound.get();
@@ -69,23 +72,35 @@ public class InvoiceService {
                 throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
                         + " doesn't have enough stock");
             }
+
             orderTotal +=  (double) Math.round(
                     invoiceProduct.getProductQuantity() * product.getUnitPrice() * 100) /100;
-                System.out.println(orderTotal);
+
+            productsUnitPrice.put(product.getProductId(), product.getUnitPrice());
         };
 
         InvoiceEntity newInvoiceEntity = new InvoiceEntity();
-        newInvoiceEntity.setCustomerId(newBuyDto.getCustomerId());
-        newInvoiceEntity.setPaymentMethod(newBuyDto.getPaymentMethod());
-        newInvoiceEntity.setUserComment(newBuyDto.getUserComment());
-        newInvoiceEntity.setInvoiceTotal(orderTotal);
+            newInvoiceEntity.setCustomerId(newBuyDto.getCustomerId());
+            newInvoiceEntity.setPaymentMethod(newBuyDto.getPaymentMethod());
+            newInvoiceEntity.setUserComment(newBuyDto.getUserComment());
+            newInvoiceEntity.setInvoiceTotal(orderTotal);
 
-        InvoiceEntity createdInvoice = invoiceRepository.save(newInvoiceEntity);
-        System.out.println(createdInvoice);
-        if (createdInvoice.getInvoiceId()>4){
-            throw new IncorrectCustomDataRequestException("Error de prueba");
+            InvoiceEntity invoiceEntitySaved = invoiceRepository.save(newInvoiceEntity);
 
+        for (ProductSummaryDto newProductInvoiceToPost : newBuyDto.getProducts()){
+            InvoiceProductEntity invoiceProductEntityToPost = new InvoiceProductEntity();
+                invoiceProductEntityToPost.setInvoiceId(invoiceEntitySaved.getInvoiceId());
+                invoiceProductEntityToPost.setProductId(newProductInvoiceToPost.getProductId());
+                invoiceProductEntityToPost.setProductQuantity(newProductInvoiceToPost.getProductQuantity());
+                invoiceProductEntityToPost.setProductTotalPrice(
+                        newProductInvoiceToPost.getProductQuantity()*
+                                productsUnitPrice.get(newProductInvoiceToPost.getProductId())
+                );
+            InvoiceProductEntity newProductInvoicePosted = invoiceProductRepository.save(invoiceProductEntityToPost);
+            newProductsToSet.add(newProductInvoicePosted);
         }
-        return createdInvoice;
+
+        newInvoiceEntity.setProducts(newProductsToSet);
+        return invoiceEntitySaved;
     }
 }
