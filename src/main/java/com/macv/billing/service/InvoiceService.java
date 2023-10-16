@@ -31,76 +31,96 @@ public class InvoiceService {
         this.invoiceProductRepository = invoiceProductRepository;
     }
 
-    public List<InvoiceEntity> getAll(){
+    public List<InvoiceEntity> getAll() {
         return invoiceRepository.findAll();
     }
 
-    public List<InvoiceEntity> findByCustomerId(String  customerId){
+    public List<InvoiceEntity> findByCustomerId(String customerId) {
         return invoiceRepository.findAllByCustomerId(customerId);
     }
 
     @Transactional
-    public InvoiceEntity postNewBuy(NewBuyDto newBuyDto) throws IncorrectCustomDataRequestException{
+    public InvoiceEntity postNewBuy(NewBuyDto newBuyDto) throws IncorrectCustomDataRequestException {
+
         double orderTotal = 0.00;
-        HashMap<Integer, Double> productsUnitPrice = new HashMap<>();
+        HashMap<Integer, ProductEntity> productsDb = new HashMap<>();
         List<InvoiceProductEntity> newProductsToSet = new ArrayList<>();
+        List<Integer> productIds = new ArrayList<>();
+
 
         boolean customerExists = customerRepository.existsById(newBuyDto.getCustomerId());
 
-        if (!customerExists){
+        if (!customerExists) {
             throw new IncorrectCustomDataRequestException("Invalid customer");
         } else if ((
                 !Objects.equals(newBuyDto.getPaymentMethod(), "CASH") &&
-                        !Objects.equals(newBuyDto.getPaymentMethod(), "CREDIT_CARD"))){
+                        !Objects.equals(newBuyDto.getPaymentMethod(), "CREDIT_CARD"))) {
             throw new IncorrectCustomDataRequestException(
                     "Payment method must be CASH or CREDIT_CARD");
         }
 
         List<ProductSummaryDto> invoiceProducts = newBuyDto.getProducts();
 
-        for(ProductSummaryDto invoiceProduct : newBuyDto.getProducts()){
+        for (ProductSummaryDto invoiceProduct : invoiceProducts) {
 
             Optional<ProductEntity> productFound = productRepository.findById(invoiceProduct.getProductId());
-            if (productFound.isEmpty()){
+            if (productFound.isEmpty()) {
                 throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
                         + " not found");
             }
 
+            if(productIds.contains(invoiceProduct.getProductId())){
+                throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
+                        + " is duplicated");
+            }
+
+            productIds.add(invoiceProduct.getProductId());
+
             ProductEntity product = productFound.get();
             int dif = product.getStock() - invoiceProduct.getProductQuantity();
-            if (dif < 0){
+            if (dif < 0) {
                 throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()
                         + " doesn't have enough stock");
             }
 
-            orderTotal +=  (double) Math.round(
-                    invoiceProduct.getProductQuantity() * product.getUnitPrice() * 100) /100;
+            orderTotal +=
+                    invoiceProduct.getProductQuantity() * product.getUnitPrice();
 
-            productsUnitPrice.put(product.getProductId(), product.getUnitPrice());
-        };
+            productsDb.put(product.getProductId(), product);
+        }
+
 
         InvoiceEntity newInvoiceEntity = new InvoiceEntity();
-            newInvoiceEntity.setCustomerId(newBuyDto.getCustomerId());
-            newInvoiceEntity.setPaymentMethod(newBuyDto.getPaymentMethod());
-            newInvoiceEntity.setUserComment(newBuyDto.getUserComment());
-            newInvoiceEntity.setInvoiceTotal(orderTotal);
+        newInvoiceEntity.setCustomerId(newBuyDto.getCustomerId());
+        newInvoiceEntity.setPaymentMethod(newBuyDto.getPaymentMethod());
+        newInvoiceEntity.setUserComment(newBuyDto.getUserComment());
+        newInvoiceEntity.setInvoiceTotal((double) Math.round(orderTotal * 100) / 100);
 
-            InvoiceEntity invoiceEntitySaved = invoiceRepository.save(newInvoiceEntity);
+        InvoiceEntity invoiceEntitySaved = invoiceRepository.save(newInvoiceEntity);
 
-        for (ProductSummaryDto newProductInvoiceToPost : newBuyDto.getProducts()){
+        for (ProductSummaryDto newProductInvoiceToPost : invoiceProducts) {
+
+            int productId = newProductInvoiceToPost.getProductId();
+            int currentStock = productsDb.get(productId).getStock();
+            int quantityOut = newProductInvoiceToPost.getProductQuantity();
+            int updatedStock = currentStock - quantityOut;
+
             InvoiceProductEntity invoiceProductEntityToPost = new InvoiceProductEntity();
-                invoiceProductEntityToPost.setInvoiceId(invoiceEntitySaved.getInvoiceId());
-                invoiceProductEntityToPost.setProductId(newProductInvoiceToPost.getProductId());
-                invoiceProductEntityToPost.setProductQuantity(newProductInvoiceToPost.getProductQuantity());
-                invoiceProductEntityToPost.setProductTotalPrice(
-                        newProductInvoiceToPost.getProductQuantity()*
-                                productsUnitPrice.get(newProductInvoiceToPost.getProductId())
-                );
+            invoiceProductEntityToPost.setInvoiceId(invoiceEntitySaved.getInvoiceId());
+            invoiceProductEntityToPost.setProductId(productId);
+            invoiceProductEntityToPost.setProductQuantity(quantityOut);
+            invoiceProductEntityToPost.setProductTotalPrice(
+                    quantityOut * productsDb.get(productId).getUnitPrice()
+            );
+
+            int a = productRepository.stockOut(productId, updatedStock);
+            System.out.println("Respuesta a UPDATE " + a);
+
             InvoiceProductEntity newProductInvoicePosted = invoiceProductRepository.save(invoiceProductEntityToPost);
             newProductsToSet.add(newProductInvoicePosted);
         }
 
-        newInvoiceEntity.setProducts(newProductsToSet);
+        invoiceEntitySaved.setProducts(newProductsToSet);
         return invoiceEntitySaved;
     }
 }

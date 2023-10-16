@@ -130,4 +130,21 @@ public class ProductEntity {
     public void setBrand(BrandEntity brand) {
         this.brand = brand;
     }
+
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "productId=" + productId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", categoryId=" + categoryId +
+                ", brandId=" + brandId +
+                ", stock=" + stock +
+                ", isActive=" + isActive +
+                ", creationDate=" + creationDate +
+                ", category=" + category +
+                ", brand=" + brand +
+                '}';
+    }
 }
