@@ -2,11 +2,9 @@ package com.macv.billing.service;
 
 import com.macv.billing.persistence.entity.InvoiceEntity;
 import com.macv.billing.persistence.entity.InvoiceProductEntity;
+import com.macv.billing.persistence.entity.SalesReportEntity;
 import com.macv.billing.persistence.entity.ProductEntity;
-import com.macv.billing.persistence.repository.CustomerRepository;
-import com.macv.billing.persistence.repository.InvoiceProductRepository;
-import com.macv.billing.persistence.repository.InvoiceRepository;
-import com.macv.billing.persistence.repository.ProductRepository;
+import com.macv.billing.persistence.repository.*;
 import com.macv.billing.service.customException.IncorrectCustomDataRequestException;
 import com.macv.billing.service.dto.NewBuyDto;
 import com.macv.billing.service.dto.ProductSummaryDto;
@@ -22,13 +20,15 @@ public class InvoiceService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final InvoiceProductRepository invoiceProductRepository;
+    private final SalesReportRepository salesReportRepository;
 
     @Autowired
-    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, ProductRepository productRepository, InvoiceProductRepository invoiceProductRepository) {
+    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, ProductRepository productRepository, InvoiceProductRepository invoiceProductRepository, SalesReportRepository salesReportRepository) {
         this.invoiceRepository = invoiceRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.invoiceProductRepository = invoiceProductRepository;
+        this.salesReportRepository = salesReportRepository;
     }
 
     public List<InvoiceEntity> getAll() {
@@ -104,6 +104,7 @@ public class InvoiceService {
             int currentStock = productsDb.get(productId).getStock();
             int quantityOut = newProductInvoiceToPost.getProductQuantity();
             int updatedStock = currentStock - quantityOut;
+            String productName = productsDb.get(productId).getName();
 
             InvoiceProductEntity invoiceProductEntityToPost = new InvoiceProductEntity();
             invoiceProductEntityToPost.setInvoiceId(invoiceEntitySaved.getInvoiceId());
@@ -113,8 +114,17 @@ public class InvoiceService {
                     quantityOut * productsDb.get(productId).getUnitPrice()
             );
 
-            int a = productRepository.stockOut(productId, updatedStock);
-            System.out.println("Respuesta a UPDATE " + a);
+            productRepository.stockOut(productId, updatedStock);
+
+            SalesReportEntity salesReportRegistration = new SalesReportEntity();
+            salesReportRegistration.setProductId(productId);
+            salesReportRegistration.setInvoiceId(invoiceEntitySaved.getInvoiceId());
+            salesReportRegistration.setProductName(productName);
+            salesReportRegistration.setTransactionType("OUT");
+            salesReportRegistration.setInitialStock(currentStock);
+            salesReportRegistration.setTransactionQuantity(quantityOut);
+            salesReportRegistration.setFinalStock(updatedStock);
+            salesReportRepository.save(salesReportRegistration);
 
             InvoiceProductEntity newProductInvoicePosted = invoiceProductRepository.save(invoiceProductEntityToPost);
             newProductsToSet.add(newProductInvoicePosted);
