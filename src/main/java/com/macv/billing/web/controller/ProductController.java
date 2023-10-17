@@ -155,7 +155,7 @@ public class ProductController {
 
         try {
             data = productService.getById(productId);
-            message = "Product created successfully";
+            message = "Product found";
             httpStatus = HttpStatus.CREATED;
         } catch (IncorrectCustomDataRequestException eCustom) {
             data = null;

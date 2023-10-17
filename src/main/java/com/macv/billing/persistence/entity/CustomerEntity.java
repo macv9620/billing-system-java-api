@@ -1,7 +1,9 @@
 package com.macv.billing.persistence.entity;
 
 import jakarta.persistence.*;
-import org.springframework.lang.NonNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Table(name = "customer")

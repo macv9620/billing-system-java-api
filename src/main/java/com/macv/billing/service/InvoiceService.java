@@ -32,11 +32,11 @@ public class InvoiceService {
     }
 
     public List<InvoiceEntity> getAll() {
-        return invoiceRepository.findAll();
+        return invoiceRepository.findAllByOrderByInvoiceIdDesc();
     }
 
     public List<InvoiceEntity> findByCustomerId(String customerId) {
-        return invoiceRepository.findAllByCustomerId(customerId);
+        return invoiceRepository.findAllByCustomerIdOrderByInvoiceIdDesc(customerId);
     }
 
     @Transactional

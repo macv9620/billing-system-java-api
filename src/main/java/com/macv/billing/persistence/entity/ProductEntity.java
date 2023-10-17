@@ -1,6 +1,7 @@
 package com.macv.billing.persistence.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class ProductEntity {
     @Column(name = "id_product")
     private int productId;
 
+    @NotBlank
     private String name;
     private String description;
 
