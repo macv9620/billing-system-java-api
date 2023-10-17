@@ -4,6 +4,11 @@ import com.macv.billing.persistence.entity.BrandEntity;
 import com.macv.billing.persistence.entity.CategoryEntity;
 import com.macv.billing.service.CategoryService;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +28,13 @@ public class CategoryContoller {
         this.categoryService = categoryService;
     }
 
+    @Operation(summary = "Cosultar categorias", description = "Consulta todas las categorias de" +
+            " productos creadas en la base de datos")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Listado de categorias",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryEntity.class)) })
+    })
     @GetMapping("/getAll")
     public ResponseEntity<ResponseWrapper<?>> getAll(){
         String message;

@@ -3,6 +3,11 @@ package com.macv.billing.web.controller;
 import com.macv.billing.persistence.entity.BrandEntity;
 import com.macv.billing.service.BrandService;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +25,13 @@ public class BrandController {
         this.brandService = brandService;
     }
 
+    @Operation(summary = "Cosultar marcas", description = "Consulta todas las marcas de" +
+            " productos creadas en la base de datos")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Listado de marcas",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BrandEntity.class)) })
+    })
     @GetMapping("/getAll")
     public ResponseEntity<ResponseWrapper<?>> getAll(){
         String message;
