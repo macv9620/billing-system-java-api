@@ -99,11 +99,11 @@ public class ProductEntity {
         this.stock = stock;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setIsActive(boolean active) {
         isActive = active;
     }
 
@@ -130,6 +130,8 @@ public class ProductEntity {
     public void setBrand(BrandEntity brand) {
         this.brand = brand;
     }
+
+
 
     @Override
     public String toString() {

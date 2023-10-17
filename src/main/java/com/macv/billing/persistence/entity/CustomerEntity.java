@@ -1,6 +1,7 @@
 package com.macv.billing.persistence.entity;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 @Entity
 @Table(name = "customer")
