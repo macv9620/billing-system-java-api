@@ -11,6 +11,7 @@ public class CustomerEntity {
 
     @Id
     @Column(name = "id_customer")
+
     private String customerId;
 
     private String name;

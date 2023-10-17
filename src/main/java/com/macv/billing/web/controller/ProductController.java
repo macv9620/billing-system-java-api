@@ -1,5 +1,6 @@
 package com.macv.billing.web.controller;
 
+import com.macv.billing.persistence.entity.CategoryEntity;
 import com.macv.billing.persistence.entity.ProductEntity;
 import com.macv.billing.persistence.entity.view.ProductStockAndPriceViewEntity;
 import com.macv.billing.service.ProductService;
@@ -7,6 +8,13 @@ import com.macv.billing.service.customException.IncorrectCustomDataRequestExcept
 import com.macv.billing.service.dto.UpdateStockDto;
 import com.macv.billing.service.dto.UpdateUnitPriceDto;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +30,13 @@ public class ProductController {
         this.productService = productService;
     }
 
+
+    @Operation(summary = "Productos existentes", description = "Permite obtener todos los productos existentes")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Listado de productos",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductEntity.class)) })
+    })
     @GetMapping("/getAll")
     public ResponseEntity<ResponseWrapper<?>> getAll() {
         String message;
@@ -43,8 +58,31 @@ public class ProductController {
         ), httpStatus);
     }
 
+
+    @Operation(summary = "Resumen de producto", description = "Permite obtener el stock y precio unitario de un producto determinado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Información encontrada",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductStockAndPriceViewEntity.class))}),
+            @ApiResponse(responseCode = "400", description = "Errores en la petición",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseWrapper.class),
+                            examples = {
+                                    @ExampleObject(name = "Producto inexistente",
+                                            value = """
+                                                    {
+                                                        "message": "Product id doesn't exist",
+                                                        "data": null
+                                                    }
+                                                                                                        """)
+                            }
+                    )}),
+    })
     @GetMapping("/getStockAndPrice/{productId}")
-    public ResponseEntity<ResponseWrapper<?>> getStockAndPriceById(@PathVariable int productId) {
+    public ResponseEntity<ResponseWrapper<?>> getStockAndPriceById(
+            @PathVariable
+            @Parameter(name = "productId", description = "Identificador del producto", example = "10")
+            int productId) {
         String message;
         ProductStockAndPriceViewEntity data;
         HttpStatus httpStatus;
@@ -69,8 +107,48 @@ public class ProductController {
         ), httpStatus);
     }
 
+    @Operation(summary = "Nuevo producto", description = "Permite la creación de nuevos productos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Producto creado correctamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductEntity.class))}),
+            @ApiResponse(responseCode = "400", description = "Errores en la petición",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseWrapper.class),
+                            examples = {@ExampleObject(name = "Nombre o descripción inválidos",
+                                    value = """
+                                            {
+                                                "message": "Invalid product name/description",
+                                                "data": null
+                                            }
+                                            """),
+                                    @ExampleObject(name = "Precio unitario inválido",
+                                            value = """
+                                                    {
+                                                        "message": "Unit price cannot be 0 o negative",
+                                                        "data": null
+                                                    }
+                                                                                                        """),
+                                    @ExampleObject(name = "Stock inválido",
+                                            value = """
+                                                                    {
+                                                                        "message": "Stock cannot be negative",
+                                                                        "data": null
+                                                                    }
+                                                    """),
+                                    @ExampleObject(name = "Categoria o marca inválidas",
+                                            value = """
+                                                                    {
+                                                                         "message": "Category/Brand id doesn't exist",
+                                                                         "data": null
+                                                                                    }
+                                                    """)
+                            }
+                    )}),
+    })
+
     @PostMapping("/create")
-    public ResponseEntity<ResponseWrapper<?>> create(@RequestBody ProductEntity productEntity){
+    public ResponseEntity<ResponseWrapper<?>> create(@RequestBody ProductEntity productEntity) {
         String message;
         ProductEntity data;
         HttpStatus httpStatus;
@@ -95,8 +173,34 @@ public class ProductController {
         ), httpStatus);
     }
 
+    @Operation(summary = "Actualización de stock", description = "Permite actualizar el stock de un producto determinado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto actualizado correctamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductEntity.class))}),
+            @ApiResponse(responseCode = "400", description = "Errores en la petición",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseWrapper.class),
+                            examples = {
+                                    @ExampleObject(name = "Stock inválido",
+                                            value = """
+                                                    {
+                                                        "message": "Stock cannot be negative",
+                                                        "data": null
+                                                    }
+                                                                                                        """),
+                                    @ExampleObject(name = "Producto inexistente",
+                                            value = """
+                                                    {
+                                                        "message": "Product id doesn't exist",
+                                                        "data": null
+                                                    }
+                                                                                                        """)
+                            }
+                    )}),
+    })
     @PatchMapping("/updateStock")
-    public ResponseEntity<ResponseWrapper<?>> updateStockById(@RequestBody UpdateStockDto updateStockDto){
+    public ResponseEntity<ResponseWrapper<?>> updateStockById(@RequestBody UpdateStockDto updateStockDto) {
         String message;
         ProductEntity data;
         HttpStatus httpStatus;
@@ -121,8 +225,35 @@ public class ProductController {
         ), httpStatus);
     }
 
+
+    @Operation(summary = "Actualización de precio", description = "Permite actualizar el precio unitario de un producto determinado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto actualizado correctamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductEntity.class))}),
+            @ApiResponse(responseCode = "400", description = "Errores en la petición",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseWrapper.class),
+                            examples = {
+                                    @ExampleObject(name = "Precio unitario inválido",
+                                            value = """
+                                                    {
+                                                        "message": "Unit price cannot be 0 o negative",
+                                                        "data": null
+                                                    }
+                                                                                                        """),
+                                    @ExampleObject(name = "Producto inexistente",
+                                            value = """
+                                                    {
+                                                        "message": "Product id doesn't exist",
+                                                        "data": null
+                                                    }
+                                                                                                        """)
+                            }
+                    )}),
+    })
     @PatchMapping("/updateUnitPrice")
-    public ResponseEntity<ResponseWrapper<?>> updatePriceById(@RequestBody UpdateUnitPriceDto updateUnitPriceDto){
+    public ResponseEntity<ResponseWrapper<?>> updatePriceById(@RequestBody UpdateUnitPriceDto updateUnitPriceDto) {
         String message;
         ProductEntity data;
         HttpStatus httpStatus;
@@ -147,8 +278,31 @@ public class ProductController {
         ), httpStatus);
     }
 
+    @Operation(summary = "Detalle de producto", description = "Permite obtener la información detallada de un determinado producto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto encontrado",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductEntity.class))}),
+            @ApiResponse(responseCode = "400", description = "Errores en la petición",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseWrapper.class),
+                            examples = {
+                                    @ExampleObject(name = "Producto inexistente",
+                                            value = """
+                                                    {
+                                                        "message": "Product id doesn't exist",
+                                                        "data": null
+                                                    }
+                                                                                                        """)
+                            }
+                    )}),
+    })
+
     @GetMapping("/getById/{productId}")
-    public ResponseEntity<ResponseWrapper<?>> getById(@PathVariable int productId){
+    public ResponseEntity<ResponseWrapper<?>> getById(
+            @PathVariable
+            @Parameter(name = "productId", description = "Identificador del producto", example = "10")
+            int productId) {
         String message;
         ProductEntity data;
         HttpStatus httpStatus;
@@ -156,7 +310,7 @@ public class ProductController {
         try {
             data = productService.getById(productId);
             message = "Product found";
-            httpStatus = HttpStatus.CREATED;
+            httpStatus = HttpStatus.OK;
         } catch (IncorrectCustomDataRequestException eCustom) {
             data = null;
             message = eCustom.getMessage();

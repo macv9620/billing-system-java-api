@@ -1,5 +1,6 @@
 package com.macv.billing.persistence.entity.view;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,10 +10,16 @@ public class ProductStockAndPriceViewEntity {
 
     @Id
     @Column(name = "id_product")
+    @Schema(description = "Identificador del producto", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private int productId;
 
+    @Schema(description = "Stock del producto", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "150", accessMode = Schema.AccessMode.READ_ONLY)
     private int stock;
 
+    @Schema(description = "Precio unitario del producto", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "33.68", accessMode = Schema.AccessMode.READ_ONLY)
     @Column(name = "unit_price")
     private double unitPrice;
 

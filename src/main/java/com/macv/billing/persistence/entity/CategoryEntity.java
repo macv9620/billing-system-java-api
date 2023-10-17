@@ -1,5 +1,6 @@
 package com.macv.billing.persistence.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,10 +10,13 @@ public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_category")
+    @Schema(description = "Identificador de categoria", requiredMode = Schema.RequiredMode.AUTO, example = "1")
     private int categoryId;
 
+    @Schema(description = "Nombre de categoria", requiredMode = Schema.RequiredMode.REQUIRED, example = "Shoes")
     private String name;
 
+    @Schema(description = "Estado de la categoria", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
     @Column(name = "active")
     private boolean isActive;
 

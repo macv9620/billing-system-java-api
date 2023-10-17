@@ -1,6 +1,5 @@
 package com.macv.billing.web.controller;
 
-import com.macv.billing.persistence.entity.BrandEntity;
 import com.macv.billing.persistence.entity.CategoryEntity;
 import com.macv.billing.service.CategoryService;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
@@ -20,11 +19,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/category")
-public class CategoryContoller {
+public class CategoryController {
     private final CategoryService categoryService;
 
     @Autowired
-    public CategoryContoller(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
@@ -36,7 +35,7 @@ public class CategoryContoller {
                             schema = @Schema(implementation = CategoryEntity.class)) })
     })
     @GetMapping("/getAll")
-    public ResponseEntity<ResponseWrapper<?>> getAll(){
+    public ResponseEntity<ResponseWrapper<List<CategoryEntity>>> getAll(){
         String message;
         List<CategoryEntity> data;
         HttpStatus httpStatus;
