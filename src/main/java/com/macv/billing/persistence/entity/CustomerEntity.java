@@ -1,9 +1,7 @@
 package com.macv.billing.persistence.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Table(name = "customer")
@@ -11,10 +9,16 @@ public class CustomerEntity {
 
     @Id
     @Column(name = "id_customer")
-
+    @Schema(description = "Identificación o documento del cliente",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "789657")
     private String customerId;
 
+    @Schema(description = "Nombre completo del cliente",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "Maria Córdoba")
     private String name;
+
+    @Schema(description = "Dirección de correo electrónico del cliente",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "maria@gmail.com")
     private String email;
 
     public String getCustomerId() {

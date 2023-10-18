@@ -62,7 +62,9 @@ public class InvoiceService {
         List<ProductSummaryDto> invoiceProducts = newBuyDto.getProducts();
 
         for (ProductSummaryDto invoiceProduct : invoiceProducts) {
-
+            if(invoiceProduct.getProductQuantity()<=0){
+                throw new IncorrectCustomDataRequestException("Product quantity cannot be 0 or negative");
+            }
             Optional<ProductEntity> productFound = productRepository.findById(invoiceProduct.getProductId());
             if (productFound.isEmpty()) {
                 throw new IncorrectCustomDataRequestException("Product Id " + invoiceProduct.getProductId()

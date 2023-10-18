@@ -1,5 +1,6 @@
 package com.macv.billing.persistence.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,22 +13,35 @@ public class InvoiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_invoice")
+    @Schema(description = "Consecutivo autogenerado que identifica la factura",
+            requiredMode = Schema.RequiredMode.AUTO, example = "40", accessMode = Schema.AccessMode.READ_ONLY)
     private int invoiceId;
 
+
     @Column(name = "id_customer")
+    @Schema(description = "Identificador de cliente",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "875599")
     private String customerId;
 
     @CreationTimestamp
     @Column(name = "invoice_date")
+    @Schema(description = "Fecha de generación de la factura",
+            requiredMode = Schema.RequiredMode.AUTO, example = "2023-10-16T21:16:30.485521", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime invoiceDate;
 
     @Column(name = "payment_method")
+    @Schema(description = "Tipo método de pago CASH o CREDIT_CARD",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "CREDIT_CARD")
     private String paymentMethod;
 
     @Column(name = "user_comment")
+    @Schema(description = "Comentario del cliente para la orden",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "As soon as posible")
     private String userComment;
 
     @Column(name = "total")
+    @Schema(description = "Valor total de todos los productos y cantidades de la orden",
+            requiredMode = Schema.RequiredMode.AUTO, example = "5489.36", accessMode = Schema.AccessMode.READ_ONLY)
     private Double invoiceTotal;
 
     @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER)

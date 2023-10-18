@@ -1,11 +1,22 @@
 package com.macv.billing.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 public class NewBuyDto {
+    @Schema(description = "Identificación o documento del cliente",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "879545")
     String customerId;
+
+    @Schema(description = "Tipo método de pago CASH o CREDIT_CARD",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "CREDIT_CARD")
     String paymentMethod;
+
+    @Schema(description = "Comentario de usuario para la compra",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "As soon as posible")
     String userComment;
+
     List<ProductSummaryDto> products;
 
     public String getCustomerId() {

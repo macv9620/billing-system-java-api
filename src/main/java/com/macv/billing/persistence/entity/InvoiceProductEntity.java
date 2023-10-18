@@ -2,6 +2,7 @@ package com.macv.billing.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.macv.billing.persistence.entity.compositeKey.InvoiceProductPK;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,16 +12,24 @@ public class InvoiceProductEntity {
 
     @Id
     @Column(name = "id_invoice")
+    @Schema(description = "Serial o identificador de la factura",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "40")
     private int invoiceId;
 
     @Id
     @Column(name = "id_product")
+    @Schema(description = "Identificador del producto",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "15")
     private int productId;
 
     @Column(name = "quantity")
+    @Schema(description = "Cantidad vendida o comprada del producto en unidades",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "60")
     private int productQuantity;
 
     @Column(name = "product_total")
+    @Schema(description = "Valor total de item, cantidad multiplicado por precio unitario",
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "2150.66")
     private double productTotalPrice;
 
     @JsonIgnore
