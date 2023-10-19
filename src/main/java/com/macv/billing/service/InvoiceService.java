@@ -10,6 +10,7 @@ import com.macv.billing.service.dto.NewBuyDto;
 import com.macv.billing.service.dto.ProductSummaryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -31,6 +32,7 @@ public class InvoiceService {
         this.salesReportRepository = salesReportRepository;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public List<InvoiceEntity> getAll() {
         return invoiceRepository.findAllByOrderByInvoiceIdDesc();
     }

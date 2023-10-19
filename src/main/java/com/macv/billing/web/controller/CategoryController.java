@@ -27,7 +27,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @Operation(summary = "Cosultar categorias", description = "Consulta todas las categorias de" +
+    @Operation(summary = "Consultar categorias", description = "Consulta todas las categorias de" +
             " productos creadas en la base de datos")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de categorias",

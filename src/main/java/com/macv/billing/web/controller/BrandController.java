@@ -25,7 +25,7 @@ public class BrandController {
         this.brandService = brandService;
     }
 
-    @Operation(summary = "Cosultar marcas", description = "Consulta todas las marcas de" +
+    @Operation(summary = "Consultar marcas", description = "Consulta todas las marcas de" +
             " productos creadas en la base de datos")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de marcas",

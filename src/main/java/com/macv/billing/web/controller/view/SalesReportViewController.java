@@ -7,6 +7,7 @@ import com.macv.billing.service.customException.IncorrectCustomDataRequestExcept
 import com.macv.billing.service.view.SalesReportViewService;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,7 +39,10 @@ public class SalesReportViewController {
                             schema = @Schema(implementation = SalesReportViewEntity.class)) })
     })
     @GetMapping("/getAllSales/{productId}")
-    public ResponseEntity<ResponseWrapper<?>> getSalesReport(@PathVariable("productId") int productId){
+    public ResponseEntity<ResponseWrapper<?>> getSalesReport(
+            @Parameter(name = "productId", description = "Identificador del producto para consultar su historial de compras",
+            example = "24")
+            @PathVariable("productId") int productId){
 
         String message;
         List<SalesReportViewEntity> data;

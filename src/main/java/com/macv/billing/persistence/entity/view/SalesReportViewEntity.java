@@ -1,5 +1,6 @@
 package com.macv.billing.persistence.entity.view;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,42 +13,68 @@ import java.time.LocalDateTime;
 public class SalesReportViewEntity {
     @Id
     @Column(name = "id_transaction")
+    @Schema(description = "Identificador autogenerado de la transacción", requiredMode = Schema.RequiredMode.AUTO,
+            example = "57", accessMode = Schema.AccessMode.READ_ONLY)
     int transactionId;
 
     @Column(name = "id_product")
+    @Schema(description = "Identificador o id del producto", requiredMode = Schema.RequiredMode.AUTO,
+            example = "14", accessMode = Schema.AccessMode.READ_ONLY)
     private int productId;
 
     @Column(name = "product_name")
+    @Schema(description = "Nombre del producto", requiredMode = Schema.RequiredMode.AUTO,
+            example = "Keyboard", accessMode = Schema.AccessMode.READ_ONLY)
     private String productName;
 
     @Column(name = "id_invoice")
+    @Schema(description = "Serial o identificador de la factura de compra", requiredMode = Schema.RequiredMode.AUTO,
+            example = "100", accessMode = Schema.AccessMode.READ_ONLY)
     private int invoiceId;
 
     @Column(name = "payment_method")
+    @Schema(description = "Método de pago", requiredMode = Schema.RequiredMode.AUTO,
+            example = "CASH", accessMode = Schema.AccessMode.READ_ONLY)
     private String paymentMethod;
 
     @Column(name = "product_total")
+    @Schema(description = "Valor total de la compra para el producto en esa transacción, cantidad de producto * precio unitario", requiredMode = Schema.RequiredMode.AUTO,
+            example = "429.36", accessMode = Schema.AccessMode.READ_ONLY)
     private double productTotal;
 
     @Column(name = "id_customer")
+    @Schema(description = "Identificación o documento del cliente que realizó la compra", requiredMode = Schema.RequiredMode.AUTO,
+            example = "875599", accessMode = Schema.AccessMode.READ_ONLY)
     private String customerId;
 
     @Column(name = "name")
+    @Schema(description = "Nombre del cliente que realizó la compra", requiredMode = Schema.RequiredMode.AUTO,
+            example = "Carolina Giraldo", accessMode = Schema.AccessMode.READ_ONLY)
     private String customerName;
 
     @Column(name = "transaction_type")
+    @Schema(description = "Indica si la transacción corresponde a una salida [OUT] o entrada [IN] de inventario", requiredMode = Schema.RequiredMode.AUTO,
+            example = "OUT", accessMode = Schema.AccessMode.READ_ONLY)
     private String transactionType;
 
     @Column(name = "initial_stock")
+    @Schema(description = "Cantidad del producto en stock antes de la compra", requiredMode = Schema.RequiredMode.AUTO,
+            example = "60", accessMode = Schema.AccessMode.READ_ONLY)
     private int initialStock;
 
     @Column(name = "transaction_quantity")
+    @Schema(description = "Cantidad del producto comprada en la transacción", requiredMode = Schema.RequiredMode.AUTO,
+            example = "20", accessMode = Schema.AccessMode.READ_ONLY)
     private int transactionQuantity;
 
     @Column(name = "final_stock")
+    @Schema(description = "Cantidad del producto en stock tras hacer el descuento de la cantidad comprada", requiredMode = Schema.RequiredMode.AUTO,
+            example = "40", accessMode = Schema.AccessMode.READ_ONLY)
     private int finalStock;
 
     @Column(name = "transaction_date")
+    @Schema(description = "Fecha de compra del producto", requiredMode = Schema.RequiredMode.AUTO,
+            example = "2023-10-16T21:16:30.530497", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime transactionDate;
 
     public int getTransactionId() {
