@@ -1,8 +1,8 @@
 package com.macv.billing.web.controller;
 
-import com.macv.billing.persistence.entity.CustomerEntity;
+import com.macv.billing.persistence.entity.UserEntity;
 import com.macv.billing.persistence.entity.ProductEntity;
-import com.macv.billing.service.CustomerService;
+import com.macv.billing.service.UserService;
 import com.macv.billing.service.customException.IncorrectCustomDataRequestException;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,31 +20,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customer")
-public class CustomerController {
-    private final CustomerService customerService;
+@RequestMapping("/api/user")
+public class UserController {
+    private final UserService userService;
 
     @Autowired
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @Operation(summary = "Clientes existentes", description = "Permite obtener todos los clientes existentes")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de clientes",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CustomerEntity.class)) })
+                            schema = @Schema(implementation = UserEntity.class)) })
     })
     @GetMapping("/getAll")
     public ResponseEntity<ResponseWrapper<?>> getAll(){
 
         String message;
-        List<CustomerEntity> data;
+        List<UserEntity> data;
         HttpStatus httpStatus;
 
         try {
-            data = customerService.getAll();
-            message = data.size() + " customers found";
+            data = userService.getAll();
+            message = data.size() + " users found";
             httpStatus = HttpStatus.OK;
         } catch (Exception e){
             data = null;
@@ -62,14 +62,14 @@ public class CustomerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cliente creado correctamente",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CustomerEntity.class))}),
+                            schema = @Schema(implementation = UserEntity.class))}),
             @ApiResponse(responseCode = "400", description = "Errores en la petición",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ResponseWrapper.class),
                             examples = {@ExampleObject(name = "Nombre o identificación inválidos",
                                     value = """
                                             {
-                                                "message": "Invalid Customer name/id",
+                                                "message": "Invalid User name/id",
                                                 "data": null
                                             }
                                             """),
@@ -83,23 +83,23 @@ public class CustomerController {
                                     @ExampleObject(name = "Cliente existente",
                                             value = """
                                                     {
-                                                        "message": "Customer already exists",
+                                                        "message": "User already exists",
                                                         "data": null
                                                     }
                                                                                                         """)
                             }
                     )}),
     })
-    @PostMapping("/createCustomer")
-    public ResponseEntity<ResponseWrapper<?>> createCustomer(@RequestBody CustomerEntity newCustomer){
+    @PostMapping("/createUser")
+    public ResponseEntity<ResponseWrapper<?>> createUser(@RequestBody UserEntity newUser){
 
         String message;
-        CustomerEntity data;
+        UserEntity data;
         HttpStatus httpStatus;
 
         try {
-            data = customerService.createCustomer(newCustomer);
-            message = "Customer created successfully";
+            data = userService.createUser(newUser);
+            message = "User created successfully";
             httpStatus = HttpStatus.CREATED;
         } catch (IncorrectCustomDataRequestException eCustom){
             data = null;
@@ -121,7 +121,7 @@ public class CustomerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CustomerEntity.class))}),
+                            schema = @Schema(implementation = UserEntity.class))}),
             @ApiResponse(responseCode = "400", description = "Errores en la petición",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ResponseWrapper.class),
@@ -129,25 +129,25 @@ public class CustomerController {
                                     @ExampleObject(name = "Cliente inexistente",
                                             value = """
                                                     {
-                                                        "message": "Customer not found",
+                                                        "message": "User not found",
                                                         "data": null
                                                     }
                                                                                                         """)
                             }
                     )}),
     })
-    @GetMapping("/getById/{customerId}")
+    @GetMapping("/getById/{userId}")
     public ResponseEntity<ResponseWrapper<?>> getById(
             @PathVariable
-            @Parameter(name = "customerId", description = "Identificador del cliente", example = "879545")
-            String customerId){
+            @Parameter(name = "userId", description = "Identificador del cliente", example = "879545")
+            String userId){
         String message;
-        CustomerEntity data;
+        UserEntity data;
         HttpStatus httpStatus;
 
         try {
-            data = customerService.getCustomerById(customerId);
-            message = "Customer found";
+            data = userService.getUserById(userId);
+            message = "User found";
             httpStatus = HttpStatus.OK;
         } catch (IncorrectCustomDataRequestException eCustom){
             data = null;

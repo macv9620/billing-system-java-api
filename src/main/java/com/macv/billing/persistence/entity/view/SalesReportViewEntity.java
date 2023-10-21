@@ -42,15 +42,15 @@ public class SalesReportViewEntity {
             example = "429.36", accessMode = Schema.AccessMode.READ_ONLY)
     private double productTotal;
 
-    @Column(name = "id_customer")
+    @Column(name = "id_user")
     @Schema(description = "Identificación o documento del cliente que realizó la compra", requiredMode = Schema.RequiredMode.AUTO,
             example = "875599", accessMode = Schema.AccessMode.READ_ONLY)
-    private String customerId;
+    private String userId;
 
     @Column(name = "name")
     @Schema(description = "Nombre del cliente que realizó la compra", requiredMode = Schema.RequiredMode.AUTO,
             example = "Carolina Giraldo", accessMode = Schema.AccessMode.READ_ONLY)
-    private String customerName;
+    private String userName;
 
     @Column(name = "transaction_type")
     @Schema(description = "Indica si la transacción corresponde a una salida [OUT] o entrada [IN] de inventario", requiredMode = Schema.RequiredMode.AUTO,
@@ -125,20 +125,20 @@ public class SalesReportViewEntity {
         this.productTotal = productTotal;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getTransactionType() {
@@ -190,8 +190,8 @@ public class SalesReportViewEntity {
                 ", invoiceId=" + invoiceId +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", productTotal=" + productTotal +
-                ", customerId=" + customerId +
-                ", customerName='" + customerName + '\'' +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
                 ", transactionType='" + transactionType + '\'' +
                 ", initialStock=" + initialStock +
                 ", transactionQuantity=" + transactionQuantity +

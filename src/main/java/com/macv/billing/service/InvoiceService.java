@@ -18,15 +18,15 @@ import java.util.*;
 @Service
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final InvoiceProductRepository invoiceProductRepository;
     private final SalesReportRepository salesReportRepository;
 
     @Autowired
-    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, ProductRepository productRepository, InvoiceProductRepository invoiceProductRepository, SalesReportRepository salesReportRepository) {
+    public InvoiceService(InvoiceRepository invoiceRepository, UserRepository userRepository, ProductRepository productRepository, InvoiceProductRepository invoiceProductRepository, SalesReportRepository salesReportRepository) {
         this.invoiceRepository = invoiceRepository;
-        this.customerRepository = customerRepository;
+        this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.invoiceProductRepository = invoiceProductRepository;
         this.salesReportRepository = salesReportRepository;
@@ -37,8 +37,8 @@ public class InvoiceService {
         return invoiceRepository.findAllByOrderByInvoiceIdDesc();
     }
 
-    public List<InvoiceEntity> findByCustomerId(String customerId) {
-        return invoiceRepository.findAllByCustomerIdOrderByInvoiceIdDesc(customerId);
+    public List<InvoiceEntity> findByUserId(String userId) {
+        return invoiceRepository.findAllByUserIdOrderByInvoiceIdDesc(userId);
     }
 
     @Transactional
@@ -50,10 +50,10 @@ public class InvoiceService {
         List<Integer> productIds = new ArrayList<>();
 
 
-        boolean customerExists = customerRepository.existsById(newBuyDto.getCustomerId());
+        boolean userExists = userRepository.existsById(newBuyDto.getUserId());
 
-        if (!customerExists) {
-            throw new IncorrectCustomDataRequestException("Invalid customer");
+        if (!userExists) {
+            throw new IncorrectCustomDataRequestException("Invalid user");
         } else if ((
                 !Objects.equals(newBuyDto.getPaymentMethod(), "CASH") &&
                         !Objects.equals(newBuyDto.getPaymentMethod(), "CREDIT_CARD"))) {
@@ -95,7 +95,7 @@ public class InvoiceService {
 
 
         InvoiceEntity newInvoiceEntity = new InvoiceEntity();
-        newInvoiceEntity.setCustomerId(newBuyDto.getCustomerId());
+        newInvoiceEntity.setUserId(newBuyDto.getUserId());
         newInvoiceEntity.setPaymentMethod(newBuyDto.getPaymentMethod());
         newInvoiceEntity.setUserComment(newBuyDto.getUserComment());
         newInvoiceEntity.setInvoiceTotal((double) Math.round(orderTotal * 100) / 100);

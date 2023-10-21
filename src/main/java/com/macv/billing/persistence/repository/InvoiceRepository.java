@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Integer> {
-    List<InvoiceEntity> findAllByCustomerIdOrderByInvoiceIdDesc(String customerId);
+    List<InvoiceEntity> findAllByUserIdOrderByInvoiceIdDesc(String userId);
 
     List<InvoiceEntity> findAllByOrderByInvoiceIdDesc();
 }

@@ -1,6 +1,6 @@
 package com.macv.billing.web.controller;
 
-import com.macv.billing.persistence.entity.CustomerEntity;
+import com.macv.billing.persistence.entity.UserEntity;
 import com.macv.billing.persistence.entity.InvoiceEntity;
 import com.macv.billing.persistence.entity.ProductEntity;
 import com.macv.billing.service.InvoiceService;
@@ -69,25 +69,25 @@ public class InvoiceController {
                                     @ExampleObject(name = "Cliente inexistente",
                                             value = """
                                                     {
-                                                        "message": "0 invoices for customer",
+                                                        "message": "0 invoices for user",
                                                         "data": []
                                                     }
                                                                                                         """)
                             }
                     )}),
     })
-    @GetMapping("/getByCustomer")
-    public ResponseEntity<ResponseWrapper<?>> getByCustomerId(
+    @GetMapping("/getByUser")
+    public ResponseEntity<ResponseWrapper<?>> getByUserId(
             @RequestParam("id")
             @Parameter(name = "id", description = "Identificador del cliente", example = "879545")
-            String customerId){
+            String userId){
         String message;
         List<InvoiceEntity> data;
         HttpStatus httpStatus;
 
         try {
-            data = invoiceService.findByCustomerId(customerId);
-            message = data.size() + " invoices found for customer " + customerId;
+            data = invoiceService.findByUserId(userId);
+            message = data.size() + " invoices found for user " + userId;
             httpStatus = HttpStatus.OK;
         } catch (Exception e){
             data = null;
@@ -112,7 +112,7 @@ public class InvoiceController {
                             examples = {@ExampleObject(name = "Cliente inválido",
                                     value = """
                                             {
-                                                "message": "Invalid customer",
+                                                "message": "Invalid user",
                                                 "data": null
                                             }
                                             """),

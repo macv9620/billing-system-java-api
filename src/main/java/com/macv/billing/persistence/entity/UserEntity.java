@@ -4,30 +4,23 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "customer")
-public class CustomerEntity {
+@Table(name="\"user\"")
+public class UserEntity {
 
     @Id
-    @Column(name = "id_customer")
-    @Schema(description = "Identificación o documento del cliente",
+    @Column(name = "id_user")
+    @Schema(description = "Identificación o documento del usuario",
             requiredMode = Schema.RequiredMode.REQUIRED, example = "789657")
-    private String customerId;
+    private String userId;
 
-    @Schema(description = "Nombre completo del cliente",
+    @Schema(description = "Nombre completo del usuario",
             requiredMode = Schema.RequiredMode.REQUIRED, example = "Maria Córdoba")
     private String name;
 
-    @Schema(description = "Dirección de correo electrónico del cliente",
+    @Schema(description = "Dirección de correo electrónico del usuario",
             requiredMode = Schema.RequiredMode.REQUIRED, example = "maria@gmail.com")
     private String email;
 
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
 
     public String getName() {
         return name;
@@ -43,5 +36,13 @@ public class CustomerEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

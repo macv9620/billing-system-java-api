@@ -7,7 +7,7 @@ import java.util.List;
 public class NewBuyDto {
     @Schema(description = "Identificación o documento del cliente",
             requiredMode = Schema.RequiredMode.REQUIRED, example = "879545")
-    String customerId;
+    String userId;
 
     @Schema(description = "Tipo método de pago CASH o CREDIT_CARD",
             requiredMode = Schema.RequiredMode.REQUIRED, example = "CREDIT_CARD")
@@ -19,12 +19,12 @@ public class NewBuyDto {
 
     List<ProductSummaryDto> products;
 
-    public String getCustomerId() {
-        return customerId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPaymentMethod() {
@@ -54,7 +54,7 @@ public class NewBuyDto {
     @Override
     public String toString() {
         return "NewBuyDto{" +
-                "customerId='" + customerId + '\'' +
+                "userId='" + userId + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", userComment='" + userComment + '\'' +
                 ", products=" + products +

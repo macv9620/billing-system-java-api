@@ -14,8 +14,8 @@ public interface SalesReportViewRepository extends JpaRepository<SalesReportView
             "k.id_invoice," +
             "i.payment_method," +
             "ip.product_total," +
-            "i.id_customer," +
-            "c.name," +
+            "i.id_user," +
+            "u.name," +
             "k.transaction_type," +
             "k.initial_stock," +
             "k.transaction_quantity," +
@@ -23,7 +23,7 @@ public interface SalesReportViewRepository extends JpaRepository<SalesReportView
             "k.transaction_date" +
             " FROM sales_report k" +
             " JOIN invoice i ON i.id_invoice = k.id_invoice" +
-            " JOIN customer c ON i.id_customer = c.id_customer" +
+            " JOIN public.user u ON i.id_user = u.id_user" +
             " JOIN invoice_product ip ON k.id_product = ip.id_product AND ip.id_invoice = k.id_invoice" +
             " WHERE k.id_product = :productId" +
             " ORDER BY k.id_transaction ASC", nativeQuery = true)

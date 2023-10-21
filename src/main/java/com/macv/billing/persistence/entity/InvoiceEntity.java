@@ -18,10 +18,10 @@ public class InvoiceEntity {
     private int invoiceId;
 
 
-    @Column(name = "id_customer")
+    @Column(name = "id_user")
     @Schema(description = "Identificador de cliente",
             requiredMode = Schema.RequiredMode.REQUIRED, example = "875599")
-    private String customerId;
+    private String userId;
 
     @CreationTimestamp
     @Column(name = "invoice_date")
@@ -59,13 +59,6 @@ public class InvoiceEntity {
         this.invoiceId = invoiceId;
     }
 
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
 
     public LocalDateTime getInvoiceDate() {
         return invoiceDate;
@@ -107,11 +100,20 @@ public class InvoiceEntity {
         this.products = products;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+
     @Override
     public String toString() {
         return "InvoiceEntity{" +
                 "invoiceId=" + invoiceId +
-                ", customerId='" + customerId + '\'' +
+                ", userId='" + userId + '\'' +
                 ", invoiceDate=" + invoiceDate +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", userComment='" + userComment + '\'' +

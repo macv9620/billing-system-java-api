@@ -49,15 +49,15 @@ public class SecurityConfig {
                 .build();
 
         //Nuevo usuario y rol
-        UserDetails customer = User.builder()
-                .username("customer")
+        UserDetails user = User.builder()
+                .username("user")
                 //Se codifica clave para ser guardada en memoria
-                .password(passwordEncoder().encode("testCustomer"))
+                .password(passwordEncoder().encode("testUser"))
                 .roles("CUSTOMER")
                 .build();
 
         //Usuario en memoria
-        return new InMemoryUserDetailsManager(admin, customer);
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
     //Encoder que provee Spring Security

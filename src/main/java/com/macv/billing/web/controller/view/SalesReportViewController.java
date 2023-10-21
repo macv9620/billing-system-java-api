@@ -1,6 +1,6 @@
 package com.macv.billing.web.controller.view;
 
-import com.macv.billing.persistence.entity.CustomerEntity;
+import com.macv.billing.persistence.entity.UserEntity;
 import com.macv.billing.persistence.entity.ProductEntity;
 import com.macv.billing.persistence.entity.view.SalesReportViewEntity;
 import com.macv.billing.service.customException.IncorrectCustomDataRequestException;
