@@ -46,7 +46,7 @@ public class ProductEntity {
     @CreationTimestamp
     @Column(name = "creation_date")
     @Schema(description = "Hora de creación del producto, autogenerada por la base de datos",
-            requiredMode = Schema.RequiredMode.AUTO,  accessMode = Schema.AccessMode.READ_ONLY)
+            requiredMode = Schema.RequiredMode.AUTO, accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime creationDate;
 
     @ManyToOne

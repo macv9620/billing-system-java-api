@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(customizeRequests -> {
                     customizeRequests
+                            .requestMatchers("/v2/api-docs/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html/**", "/webjars/**", "/swagger-ui/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/brand/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/category/**").permitAll()
@@ -35,29 +36,6 @@ public class SecurityConfig {
                 })
                 .httpBasic(Customizer.withDefaults());
         return http.build();
-    }
-
-    //Será un usuario en memoria, no en una BD u otro lugar almacenado
-    @Bean
-    public UserDetailsService memoryUsers(){
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                //Se codifica clave para ser guardada en memoria
-                .password(passwordEncoder().encode("testAdmin"))
-                .roles("ADMIN")
-                .build();
-
-        //Nuevo usuario y rol
-        UserDetails user = User.builder()
-                .username("user")
-                //Se codifica clave para ser guardada en memoria
-                .password(passwordEncoder().encode("testUser"))
-                .roles("CUSTOMER")
-                .build();
-
-        //Usuario en memoria
-        return new InMemoryUserDetailsManager(admin, user);
     }
 
     //Encoder que provee Spring Security
