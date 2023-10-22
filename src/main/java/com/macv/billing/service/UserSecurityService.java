@@ -1,6 +1,7 @@
 package com.macv.billing.service;
 
 import com.macv.billing.persistence.entity.UserEntity;
+import com.macv.billing.persistence.entity.UserRoleEntity;
 import com.macv.billing.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -33,12 +34,15 @@ public class UserSecurityService implements UserDetailsService {
                         "User " + username + " Not found"
                 ));
 
+        String[] roles = userEntity.getRoles().stream().map(UserRoleEntity::getRoleName).toArray(String[]::new);
+
+
         // Se crea usuario de Spring Security para validación
         return User.builder()
                 .username(userEntity.getUserId())
                 .password(userEntity.getPassword())
                 //En inicio el rol será admin, en un momento esto pasará también a la BD
-                .roles("ADMIN")
+                .roles(roles)
                 //Si el usuario está bloquedado o deshabilitado
                 .accountLocked(userEntity.getLocked())
                 .disabled(userEntity.getDisabled())

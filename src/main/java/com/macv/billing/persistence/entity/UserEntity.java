@@ -51,7 +51,7 @@ public class UserEntity {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserRoleEntity> roles;
 
 
