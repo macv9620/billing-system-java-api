@@ -1,14 +1,14 @@
 package com.macv.billing.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import org.springframework.context.annotation.Bean;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="\"user\"")
@@ -48,10 +48,20 @@ public class UserEntity {
     @Schema(description = "Indica la fecha de creación del usuario",
             requiredMode = Schema.RequiredMode.AUTO,
             accessMode = Schema.AccessMode.READ_ONLY)
+    @CreationTimestamp
     private LocalDateTime creationDate;
 
+    @OneToMany(mappedBy = "user")
+    private List<UserRoleEntity> roles;
 
 
+    public List<UserRoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<UserRoleEntity> roles) {
+        this.roles = roles;
+    }
 
     public String getName() {
         return name;
