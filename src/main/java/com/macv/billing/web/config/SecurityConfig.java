@@ -3,7 +3,9 @@ package com.macv.billing.web.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -28,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(customizeRequests -> {
                     customizeRequests
                             .requestMatchers("/v2/api-docs/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html/**", "/webjars/**", "/swagger-ui/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/auth/login/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/brand/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/category/**").permitAll()
@@ -42,6 +45,15 @@ public class SecurityConfig {
                 })
                 .httpBasic(Customizer.withDefaults());
         return http.build();
+    }
+
+    //Crear el authenticationManager para poderlo inyectar en el AuthController
+    //Desde el controller se le enviará un AuthenticationConfiguration
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        //Con base en ese AutenticationConfiguration configuration se retorna
+        //el AuthenticationManager que se tiene Spring por defecto
+        return configuration.getAuthenticationManager();
     }
 
     //Encoder que provee Spring Security
