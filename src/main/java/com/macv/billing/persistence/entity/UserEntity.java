@@ -39,8 +39,8 @@ public class UserEntity {
     private boolean disabled;
 
     @Schema(description = "Indica la clave del usuario, para fines de prueba e ilustrativos se expone este campo, teniendo en cuenta que el deber ser es no hacerlo",
-            requiredMode = Schema.RequiredMode.AUTO, example = "pruebas0000",
-            accessMode = Schema.AccessMode.READ_ONLY)
+            requiredMode = Schema.RequiredMode.REQUIRED, example = "pruebas0000",
+            accessMode = Schema.AccessMode.WRITE_ONLY)
     @Column(name="\"password\"")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // This is to make sure the attribute is write-only
     private String password;
@@ -52,6 +52,7 @@ public class UserEntity {
     private LocalDateTime creationDate;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<UserRoleEntity> roles;
 
 

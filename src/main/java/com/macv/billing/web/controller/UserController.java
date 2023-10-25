@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name="6. User-Controller", description = "Endpoint para la gestión de usuarios")
 public class UserController {
     private final UserService userService;
 
@@ -29,7 +33,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "Clientes existentes", description = "Permite obtener todos los clientes existentes")
+    @Operation(summary = "Clientes existentes / requiere JWT rol 'ADMIN'", description = "Permite obtener todos los clientes existentes")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de clientes",
                     content = { @Content(mediaType = "application/json",
@@ -58,7 +62,7 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Crear cliente", description = "Permite la creación de nuevos clientes")
+    @Operation(summary = "Crear cliente / requiere JWT rol 'ADMIN'", description = "Permite la creación de nuevos clientes, por defecto los nuevos clientes creados tienen el rol 'CUSTOMER'")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cliente creado correctamente",
                     content = {@Content(mediaType = "application/json",
@@ -117,7 +121,7 @@ public class UserController {
         ), httpStatus);
     }
 
-    @Operation(summary = "Detalle de cliente", description = "Permite obtener la información detallada de un determinado cliente")
+    @Operation(summary = "Detalle de cliente / requiere JWT rol 'ADMIN'", description = "Permite obtener la información detallada de un determinado cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado",
                     content = {@Content(mediaType = "application/json",

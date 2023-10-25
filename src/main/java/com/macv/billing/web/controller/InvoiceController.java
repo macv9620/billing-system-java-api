@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoice")
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name="7. Invoice-Controller", description = "Endpoint para la gestion y consulta de facturas")
 public class InvoiceController {
     private final InvoiceService invoiceService;
 
@@ -30,7 +34,7 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    @Operation(summary = "Facturas existentes", description = "Permite obtener todas las facturas de venta existentes y los productos que la componen")
+    @Operation(summary = "Facturas existentes / requiere JWT rol 'ADMIN'", description = "Permite obtener todas las facturas de venta existentes y los productos que la componen")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de facturas",
                     content = { @Content(mediaType = "application/json",
@@ -57,7 +61,7 @@ public class InvoiceController {
         ), httpStatus);
     }
 
-    @Operation(summary = "Facturas por cliente", description = "Permite obtener las facturas asociadas a un determinado cliente")
+    @Operation(summary = "Facturas por cliente / requiere JWT rol 'ADMIN'", description = "Permite obtener las facturas asociadas a un determinado cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de facturas",
                     content = {@Content(mediaType = "application/json",
@@ -101,7 +105,7 @@ public class InvoiceController {
     }
 
 
-    @Operation(summary = "Registrar compra", description = "Permite la creación de nuevas compras o facturas, el método crea la factura y descuenta del inventario la cantidad comprada")
+    @Operation(summary = "Registrar compra / requiere JWT rol 'ADMIN' o 'CUSTOMER'", description = "Permite la creación de nuevas compras o facturas, el método crea la factura y descuenta del inventario la cantidad comprada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Compra registrada exitosamente",
                     content = {@Content(mediaType = "application/json",

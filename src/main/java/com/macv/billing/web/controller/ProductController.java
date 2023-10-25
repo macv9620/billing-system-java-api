@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/product")
+@Tag(name="4. Product-Controller", description = "Endpoint para la gestión de productos, algunos métodos requieren autenticación con JWT y usuario con rol 'ADMIN'")
 public class ProductController {
     private final ProductService productService;
 
@@ -31,7 +34,7 @@ public class ProductController {
     }
 
 
-    @Operation(summary = "Productos existentes", description = "Permite obtener todos los productos existentes")
+    @Operation(summary = "Productos existentes / no requiere JWT", description = "Permite obtener todos los productos existentes")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de productos",
                     content = { @Content(mediaType = "application/json",
@@ -59,7 +62,7 @@ public class ProductController {
     }
 
 
-    @Operation(summary = "Resumen de producto", description = "Permite obtener el stock y precio unitario de un producto determinado")
+    @Operation(summary = "Resumen de producto / requiere JWT rol 'ADMIN'", description = "Permite obtener el stock y precio unitario de un producto determinado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Información encontrada",
                     content = {@Content(mediaType = "application/json",
@@ -79,6 +82,7 @@ public class ProductController {
                     )}),
     })
     @GetMapping("/getStockAndPrice/{productId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ResponseWrapper<?>> getStockAndPriceById(
             @PathVariable
             @Parameter(name = "productId", description = "Identificador del producto", example = "10")
@@ -107,7 +111,7 @@ public class ProductController {
         ), httpStatus);
     }
 
-    @Operation(summary = "Nuevo producto", description = "Permite la creación de nuevos productos")
+    @Operation(summary = "Nuevo producto / requiere JWT rol 'ADMIN'", description = "Permite la creación de nuevos productos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Producto creado correctamente",
                     content = {@Content(mediaType = "application/json",
@@ -147,6 +151,7 @@ public class ProductController {
                     )}),
     })
     @PostMapping("/create")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ResponseWrapper<?>> create(@RequestBody ProductEntity productEntity) {
         String message;
         ProductEntity data;
@@ -172,7 +177,7 @@ public class ProductController {
         ), httpStatus);
     }
 
-    @Operation(summary = "Actualización de stock", description = "Permite actualizar el stock de un producto determinado")
+    @Operation(summary = "Actualización de stock / requiere JWT rol 'ADMIN'", description = "Permite actualizar el stock de un producto determinado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto actualizado correctamente",
                     content = {@Content(mediaType = "application/json",
@@ -199,6 +204,7 @@ public class ProductController {
                     )}),
     })
     @PatchMapping("/updateStock")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ResponseWrapper<?>> updateStockById(@RequestBody UpdateStockDto updateStockDto) {
         String message;
         ProductEntity data;
@@ -225,7 +231,7 @@ public class ProductController {
     }
 
 
-    @Operation(summary = "Actualización de precio", description = "Permite actualizar el precio unitario de un producto determinado")
+    @Operation(summary = "Actualización de precio / requiere JWT rol 'ADMIN'", description = "Permite actualizar el precio unitario de un producto determinado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto actualizado correctamente",
                     content = {@Content(mediaType = "application/json",
@@ -252,6 +258,7 @@ public class ProductController {
                     )}),
     })
     @PatchMapping("/updateUnitPrice")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ResponseWrapper<?>> updatePriceById(@RequestBody UpdateUnitPriceDto updateUnitPriceDto) {
         String message;
         ProductEntity data;
@@ -277,7 +284,7 @@ public class ProductController {
         ), httpStatus);
     }
 
-    @Operation(summary = "Detalle de producto", description = "Permite obtener la información detallada de un determinado producto")
+    @Operation(summary = "Detalle de producto / requiere JWT rol 'ADMIN'", description = "Permite obtener la información detallada de un determinado producto")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado",
                     content = {@Content(mediaType = "application/json",
@@ -296,8 +303,8 @@ public class ProductController {
                             }
                     )}),
     })
-
     @GetMapping("/getById/{productId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ResponseWrapper<?>> getById(
             @PathVariable
             @Parameter(name = "productId", description = "Identificador del producto", example = "10")

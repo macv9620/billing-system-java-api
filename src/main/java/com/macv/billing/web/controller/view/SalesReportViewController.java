@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/salesReport")
+@Tag(name="5. SalesReport-Controller", description = "Endpoint generar un reporte de ventas por producto")
 public class SalesReportViewController {
     private final SalesReportViewService salesReportViewService;
 
@@ -31,7 +34,7 @@ public class SalesReportViewController {
     }
 
 
-    @Operation(summary = "Compras asociadas a un producto",
+    @Operation(summary = "Compras asociadas a un producto / requiere JWT rol 'ADMIN'",
             description = "Genera un reporte de todas las compras asociadas a un producto incluyendo información relavante de la transacción, stock, medio de pago, cliente, fecha entre otros")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de compras",
@@ -39,6 +42,7 @@ public class SalesReportViewController {
                             schema = @Schema(implementation = SalesReportViewEntity.class)) })
     })
     @GetMapping("/getAllSales/{productId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ResponseWrapper<?>> getSalesReport(
             @Parameter(name = "productId", description = "Identificador del producto para consultar su historial de compras",
             example = "24")

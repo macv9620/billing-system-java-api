@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/category")
+@Tag(name="3. Category-Controller", description = "Endpoint para la consulta de categorias existentes")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -27,7 +29,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @Operation(summary = "Consultar categorias", description = "Consulta todas las categorias de" +
+    @Operation(summary = "Consultar categorias / no requiere JWT", description = "Consulta todas las categorias de" +
             " productos creadas en la base de datos")
     @ApiResponses(value = {
             @ApiResponse( responseCode = "200", description = "Listado de categorias",

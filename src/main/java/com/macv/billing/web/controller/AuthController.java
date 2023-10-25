@@ -1,9 +1,17 @@
 package com.macv.billing.web.controller;
 
+import com.macv.billing.persistence.entity.InvoiceEntity;
 import com.macv.billing.service.dto.AuthRequestLoginDto;
 import com.macv.billing.service.dto.AuthResponseLoginDto;
 import com.macv.billing.web.config.JwtUtil;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name="1. Auth-Controller", description = "Endpoint para la autenticación de usuarios que retorna el JWT necesario para las peticiones protegidas")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
@@ -25,6 +34,13 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    @Operation(summary = "Iniciar sesión", description = "Permite la autenticación de un usuario determinado y retorna el JWT necesario para los endpoints protegidos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login exitoso",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthResponseLoginDto.class))}),
+            @ApiResponse(responseCode = "403", description = "Credenciales inválidas")
+    })
     @PostMapping("/login")
     public ResponseEntity<ResponseWrapper<?>> login(@RequestBody AuthRequestLoginDto authRequestLoginDto){
         System.out.println(authRequestLoginDto);
