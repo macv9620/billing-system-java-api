@@ -32,7 +32,7 @@ public class JwtUtil {
                 .withIssuedAt(new Date())
                 //Cuando expira el JWT en milisegundos en este caso se parametriza para que sea 1 día a partir
                 //de la fecha de creación
-                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30)))
                 //Firma privada del JWT, este recibe una clave secreta y un algoritmo
                 .sign(ALGORITHM);
 

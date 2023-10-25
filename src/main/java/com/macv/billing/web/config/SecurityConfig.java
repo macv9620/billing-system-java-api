@@ -7,19 +7,21 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.List;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
+    private final JwtFilter jwtFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -27,11 +29,14 @@ public class SecurityConfig {
                     csrfConfig.disable();
                 })
                 .cors(Customizer.withDefaults())
+                .sessionManagement(sessionConfig -> {
+                    sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                })
                 .authorizeHttpRequests(customizeRequests -> {
                     customizeRequests
                             .requestMatchers("/v2/api-docs/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html/**", "/webjars/**", "/swagger-ui/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/auth/login/**").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/product/getAll/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/brand/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/category/**").permitAll()
                             //Ojo con el orden de la cadena analizar si hay un permiso o configuración "superior"
@@ -43,7 +48,7 @@ public class SecurityConfig {
                             .anyRequest()
                             .authenticated();
                 })
-                .httpBasic(Customizer.withDefaults());
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

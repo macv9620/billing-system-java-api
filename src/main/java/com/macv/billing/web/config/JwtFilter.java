@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -41,7 +40,6 @@ public class JwtFilter extends OncePerRequestFilter {
             //.doFilter(): Causes the next filter in the chain to be invoked, or if the calling filter is the last
             //filter in the chain, causes the resource at the end of the chain to be invoked.
             filterChain.doFilter(request, response);
-
             //Evitar que se sigan haciendo validaciones
             return;
         }
@@ -61,6 +59,8 @@ public class JwtFilter extends OncePerRequestFilter {
         //Buscar el usuario en la BD y retornarlo al filtro
         User userLoaded = (User) userSecurityService.loadUserByUsername(username);
 
+
+
         //4. Cargar al usuario en el contexto de seguridad
         //Cuando se carga el usuario Spring entiende que pasó los filtros y continua con el SecurityChainFilter
         //Validando permisos y lo demás, esta carga le indica a los otros filtros que la pertición
@@ -72,6 +72,9 @@ public class JwtFilter extends OncePerRequestFilter {
                         userLoaded.getPassword(),
                         userLoaded.getAuthorities()
                 );
+
+        System.out.println(authenticationToken);
+
         //cargar usuario al contexto de seguridad
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);
