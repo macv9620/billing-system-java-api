@@ -12,6 +12,7 @@ import com.macv.billing.service.customException.IncorrectCustomDataRequestExcept
 import com.macv.billing.service.dto.UpdateStockDto;
 import com.macv.billing.service.dto.UpdateUnitPriceDto;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -27,6 +28,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
 
+    @Autowired
     public ProductService(ProductRepository productRepository, ProductStockAndPriceViewRepository productStockAndPriceViewRepository, CategoryRepository categoryRepository, BrandRepository brandRepository) {
         this.productRepository = productRepository;
         this.productStockAndPriceViewRepository = productStockAndPriceViewRepository;

@@ -4,6 +4,7 @@ import com.macv.billing.persistence.entity.view.SalesReportViewEntity;
 import com.macv.billing.persistence.repository.ProductRepository;
 import com.macv.billing.persistence.repository.view.SalesReportViewRepository;
 import com.macv.billing.service.customException.IncorrectCustomDataRequestException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class SalesReportViewService {
     private final SalesReportViewRepository salesReportViewRepository;
     private final ProductRepository productRepository;
 
+    @Autowired
     public SalesReportViewService(SalesReportViewRepository salesReportViewRepository, ProductRepository productRepository) {
         this.salesReportViewRepository = salesReportViewRepository;
         this.productRepository = productRepository;

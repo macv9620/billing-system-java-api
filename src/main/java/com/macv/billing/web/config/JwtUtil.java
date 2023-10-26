@@ -13,8 +13,11 @@ import java.util.concurrent.TimeUnit;
 public class JwtUtil {
 
     //Clave secreta que irá en la firma del JWT
-    private static final String SECRET_KEY = System.getenv().get("BILLING_SECRET_JWT_KEY");
-    private static final int JWT_MINUTES_TO_EXPIRE = Integer.parseInt(System.getenv().get("JWT_MINUTES_TO_EXPIRE"));
+    //private static final String SECRET_KEY = System.getenv().get("BILLING_SECRET_JWT_KEY");
+    //private static final int JWT_MINUTES_TO_EXPIRE = Integer.parseInt(System.getenv().get("JWT_MINUTES_TO_EXPIRE"));
+
+    private static final String SECRET_KEY = "claveSecretaPrueba";
+    private static final int JWT_MINUTES_TO_EXPIRE = 60;
 
     //Algoritmo de encriptación que se usará en la firma
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);

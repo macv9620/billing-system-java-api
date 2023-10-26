@@ -1,10 +1,12 @@
 package com.macv.billing.persistence.entity.compositeKey;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Id;
 
 import java.io.Serializable;
 
+@Embeddable
 public class InvoiceProductPK implements Serializable {
     @Id
     @Column(name = "id_invoice")
