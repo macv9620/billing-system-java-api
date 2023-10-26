@@ -21,7 +21,7 @@ public class CorsConfig {
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
 
         //Origenes permitidos
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+        corsConfiguration.setAllowedOrigins(List.of("*"));
 
         //Hedears: en este caso se permiten rodos oc
         corsConfiguration.setAllowedHeaders(List.of("*"));

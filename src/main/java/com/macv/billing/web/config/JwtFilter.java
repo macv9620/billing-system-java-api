@@ -1,5 +1,7 @@
 package com.macv.billing.web.config;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.JsonObject;
 import com.macv.billing.service.UserSecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,9 +36,18 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        String requestPath = request.getRequestURI();
+
         //1. Validar que sea un Header Authorization válido
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         if(authHeader == null || !authHeader.startsWith("Bearer")){
+
+            if(!isFreeAccessEndpoint(requestPath)){
+                sendErrorJson(response, "Invalid token");
+                return;
+            }
+
             //.doFilter(): Causes the next filter in the chain to be invoked, or if the calling filter is the last
             //filter in the chain, causes the resource at the end of the chain to be invoked.
             filterChain.doFilter(request, response);
@@ -49,6 +60,12 @@ public class JwtFilter extends OncePerRequestFilter {
         //String del authority que llega en el header, .trim asegura que no tenga espacios ni antes ni después
         String jwt = authHeader.split(" ")[1].trim();
         if (!jwtUtil.validateToken(jwt)){
+
+            if(!isFreeAccessEndpoint(requestPath)){
+                sendErrorJson(response, "Invalid token");
+                return;
+            }
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -79,4 +96,30 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);
     }
+
+    private boolean isFreeAccessEndpoint(String requestPath) {
+        // Check if the request path corresponds to your free access endpoints
+        // You can customize this logic based on your application's URL patterns
+        return requestPath.equals("/api/auth/login")
+                || requestPath.equals("/api/product/getAll")
+                || requestPath.equals("/api/brand/getAll")
+                || requestPath.equals("/api/category/getAll")
+                || requestPath.startsWith("/swagger")
+                || requestPath.startsWith("/v2/api")
+                || requestPath.startsWith("/v3/api")
+                || requestPath.startsWith("/webjars");
+    }
+
+    private void sendErrorJson(HttpServletResponse response, String errorMessage) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        //Crear json para personalizar mensaje de error
+        JsonObject jsonError = new JsonObject();
+        jsonError.addProperty("message", errorMessage);
+
+        response.getWriter().write(jsonError.toString());
+    }
+
 }

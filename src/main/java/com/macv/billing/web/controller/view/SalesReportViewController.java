@@ -9,6 +9,7 @@ import com.macv.billing.web.controller.wrapper.ResponseWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,6 +27,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/salesReport")
 @Tag(name="5. SalesReport-Controller", description = "Endpoint generar un reporte de ventas por producto")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "401", description = "Falla autenticación, token no enviado en el Header o token inválido",
+                content = {@Content(mediaType = "application/json",
+                        examples = {
+                                @ExampleObject(
+                                        value = """
+                                                    {
+                                                        "message": "Invalid token"
+                                                    }
+                                                                                                        """)
+                        }
+                )}),
+        @ApiResponse(responseCode = "403", description = "Usuario sin permisos para acceder al recurso",
+                content = {@Content(mediaType = "application/json",
+                        examples = {
+                                @ExampleObject(
+                                        value = """
+                                                    {
+                                                        "message": "Unauthorized"
+                                                    }
+                                                                                                        """)
+                        }
+                )})
+})
 public class SalesReportViewController {
     private final SalesReportViewService salesReportViewService;
 
@@ -45,7 +70,7 @@ public class SalesReportViewController {
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ResponseWrapper<?>> getSalesReport(
             @Parameter(name = "productId", description = "Identificador del producto para consultar su historial de compras",
-            example = "24")
+            example = "12")
             @PathVariable("productId") int productId){
 
         String message;

@@ -27,6 +27,30 @@ import java.util.List;
 @RequestMapping("/api/invoice")
 @SecurityRequirement(name = "Bearer Authentication")
 @Tag(name="7. Invoice-Controller", description = "Endpoint para la gestion y consulta de facturas")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "401", description = "Falla autenticación, token no enviado en el Header o token inválido",
+                content = {@Content(mediaType = "application/json",
+                        examples = {
+                                @ExampleObject(
+                                        value = """
+                                                    {
+                                                        "message": "Invalid token"
+                                                    }
+                                                                                                        """)
+                        }
+                )}),
+        @ApiResponse(responseCode = "403", description = "Usuario sin permisos para acceder al recurso",
+                content = {@Content(mediaType = "application/json",
+                        examples = {
+                                @ExampleObject(
+                                        value = """
+                                                    {
+                                                        "message": "Unauthorized"
+                                                    }
+                                                                                                        """)
+                        }
+                )})
+})
 public class InvoiceController {
     private final InvoiceService invoiceService;
 

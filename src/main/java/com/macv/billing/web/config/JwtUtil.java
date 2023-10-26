@@ -14,6 +14,7 @@ public class JwtUtil {
 
     //Clave secreta que irá en la firma del JWT
     private static final String SECRET_KEY = System.getenv().get("BILLING_SECRET_JWT_KEY");
+    private static final int JWT_MINUTES_TO_EXPIRE = Integer.parseInt(System.getenv().get("JWT_MINUTES_TO_EXPIRE"));
 
     //Algoritmo de encriptación que se usará en la firma
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
@@ -32,7 +33,7 @@ public class JwtUtil {
                 .withIssuedAt(new Date())
                 //Cuando expira el JWT en milisegundos en este caso se parametriza para que sea 1 día a partir
                 //de la fecha de creación
-                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(JWT_MINUTES_TO_EXPIRE)))
                 //Firma privada del JWT, este recibe una clave secreta y un algoritmo
                 .sign(ALGORITHM);
 

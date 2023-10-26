@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name="1. Auth-Controller", description = "Endpoint para la autenticación de usuarios que retorna el JWT necesario para las peticiones protegidas")
+@Tag(name="1. Auth-Controller", description = "Endpoint para la autenticación de usuarios que retorna el JWT necesario para las peticiones protegidas, el JWT tiene validez por 60 min, pasado ese tiempo deberá generarse uno nuevo")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
@@ -39,7 +39,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Login exitoso",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthResponseLoginDto.class))}),
-            @ApiResponse(responseCode = "403", description = "Credenciales inválidas")
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
     })
     @PostMapping("/login")
     public ResponseEntity<ResponseWrapper<?>> login(@RequestBody AuthRequestLoginDto authRequestLoginDto){

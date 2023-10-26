@@ -1,10 +1,12 @@
 package com.macv.billing.web.controller;
 
 import com.macv.billing.persistence.entity.CategoryEntity;
+import com.macv.billing.persistence.entity.view.ProductStockAndPriceViewEntity;
 import com.macv.billing.service.CategoryService;
 import com.macv.billing.web.controller.wrapper.ResponseWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/category")
 @Tag(name="3. Category-Controller", description = "Endpoint para la consulta de categorias existentes")
+
 public class CategoryController {
     private final CategoryService categoryService;
 

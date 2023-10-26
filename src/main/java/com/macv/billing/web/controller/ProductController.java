@@ -26,6 +26,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/product")
 @Tag(name="4. Product-Controller", description = "Endpoint para la gestión de productos, algunos métodos requieren autenticación con JWT y usuario con rol 'ADMIN'")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "401", description = "Falla autenticación, token no enviado en el Header o token inválido",
+                content = {@Content(mediaType = "application/json",
+                        examples = {
+                                @ExampleObject(
+                                        value = """
+                                                    {
+                                                        "message": "Invalid token"
+                                                    }
+                                                                                                        """)
+                        }
+                )}),
+        @ApiResponse(responseCode = "403", description = "Usuario sin permisos para acceder al recurso",
+                content = {@Content(mediaType = "application/json",
+                        examples = {
+                                @ExampleObject(
+                                        value = """
+                                                    {
+                                                        "message": "Unauthorized"
+                                                    }
+                                                                                                        """)
+                        }
+                )})
+})
 public class ProductController {
     private final ProductService productService;
 

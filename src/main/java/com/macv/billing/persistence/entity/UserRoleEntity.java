@@ -1,6 +1,7 @@
 package com.macv.billing.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,12 +13,21 @@ public class UserRoleEntity {
 
     @Id
     @Column(name = "id_user")
+    @Schema(description = "Identificación de usuario",
+            requiredMode = Schema.RequiredMode.AUTO, example = "8895874",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String userId;
 
     @Column(name = "role_name")
+    @Schema(description = "Rol de usuario, determina las autorizaciones que tiene el usuario al generar peticiones a la API",
+            requiredMode = Schema.RequiredMode.AUTO, example = "CUSTOMER",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String roleName;
 
     @CreationTimestamp
+    @Schema(description = "Fecha de asignación autorizaciones",
+            requiredMode = Schema.RequiredMode.AUTO,
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Column(name = "granted_date")
     private Date grantedDate;
 
